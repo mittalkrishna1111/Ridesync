@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% from 'components/sidebar.html' import admin_sidebar %}
+{% block title %}Admin Dashboard | RideSync{% endblock %}
+
+{% block content %}
+<div class="portal-layout">
+  {{ admin_sidebar('admin_dashboard') }}
+
+  <div class="portal-content">
+    <div class="page-header">
+      <div class="page-kicker">Admin Portal</div>
+      <h1 class="page-title">Welcome, {{ current_admin_name or 'Administrator' }}</h1>
+      <p class="page-subtitle">Monitor users, vehicles, reports, ongoing rides, feedback, and audit records.</p>
+    </div>
+
+    <div class="grid-4 mb-3">
+      <div class="stat-card">
+        <div class="stat-label">Registered Users</div>
+        <div class="stat-value">{{ stats.total_users }}</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Registered Vehicles</div>
+        <div class="stat-value">{{ stats.total_vehicles }}</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Active Rides</div>
+        <div class="stat-value">{{ stats.active_rides }}</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Open Reports</div>
+        <div class="stat-value">{{ stats.open_reports }}</div>
+      </div>
+    </div>
+
+    <div class="form-card" style="max-width:640px;">
+      <h2 class="mb-2">Add New Admin</h2>
+      <form method="POST" action="{{ url_for('admin_register') }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <div class="form-grid">
+          <div class="form-group full-span">
+            <label class="form-label" for="full_name">Full Name</label>
+            <input class="form-control" type="text" id="full_name" name="full_name" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="email">Email Address</label>
+            <input class="form-control" type="email" id="email" name="email" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="phone">Phone Number</label>
+            <input class="form-control" type="text" id="phone" name="phone" maxlength="15" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="password">Password (min 6 chars)</label>
+            <input class="form-control" type="password" id="password" name="password" minlength="6" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="confirm_password">Confirm Password</label>
+            <input class="form-control" type="password" id="confirm_password" name="confirm_password" minlength="6" required>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn primary btn-sm">Register New Admin</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

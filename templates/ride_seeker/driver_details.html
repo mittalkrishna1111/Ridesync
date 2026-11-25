@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% from 'components/sidebar.html' import user_sidebar %}
+{% from 'components/status_badge.html' import status_badge %}
+{% block title %}Driver Details | RideSync{% endblock %}
+
+{% block content %}
+<div class="portal-layout">
+  {{ user_sidebar('seeker_bookings') }}
+
+  <div class="portal-content">
+    <div class="page-header">
+      <div class="page-kicker">Booking #{{ driver.booking_id }}</div>
+      <h1 class="page-title">Driver &amp; Vehicle Details</h1>
+      <p class="page-subtitle">Contact and vehicle information for Ride #{{ driver.ride_id }}.</p>
+    </div>
+
+    <div class="grid-2">
+      <div class="glass-card">
+        <h2>Driver Information</h2>
+        <div class="ride-meta mt-2" style="flex-direction:column; gap:10px;">
+          <span><strong>Name:</strong> {{ driver.full_name }}</span>
+          <span><strong>Email:</strong> {{ driver.email }}</span>
+          <span><strong>Phone:</strong> {{ driver.phone }}</span>
+          <span><strong>Booking Status:</strong> {{ status_badge(driver.booking_status) }}</span>
+        </div>
+      </div>
+
+      <div class="glass-card">
+        <h2>Vehicle Information</h2>
+        <div class="ride-meta mt-2" style="flex-direction:column; gap:10px;">
+          <span><strong>Vehicle:</strong> {{ driver.vehicle_name }}</span>
+          <span><strong>Registration Number:</strong> {{ driver.registration_number }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-3">
+      <a href="{{ url_for('seeker_bookings') }}" class="btn outline btn-sm">&larr; Back to My Bookings</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

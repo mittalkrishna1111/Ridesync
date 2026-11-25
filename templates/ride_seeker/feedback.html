@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% from 'components/sidebar.html' import user_sidebar %}
+{% block title %}Give Ride Feedback | RideSync{% endblock %}
+
+{% block content %}
+<div class="portal-layout">
+  {{ user_sidebar('seeker_feedback') }}
+
+  <div class="portal-content">
+    <div class="page-header">
+      <div class="page-kicker">Ride Seeker</div>
+      <h1 class="page-title">Give Ride Feedback</h1>
+      <p class="page-subtitle">Rate completed rides (1 to 5) and share your experience with the driver.</p>
+    </div>
+
+    {% if eligible_bookings %}
+      <form method="POST" action="{{ url_for('seeker_feedback') }}" class="form-card" style="max-width:640px;">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+        <div class="form-group">
+          <label class="form-label" for="booking_id">Select Completed Booking</label>
+          <select class="form-select" id="booking_id" name="booking_id" required>
+            {% for b in eligible_bookings %}
+              <option value="{{ b.booking_id }}">
+                Booking #{{ b.booking_id }} — Ride #{{ b.ride_id }} | Driver: {{ b.driver_name }} ({{ b.ride_date }})
+              </option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="rating">Rating (1 to 5)</label>
+          <select class="form-select" id="rating" name="rating" required>
+            <option value="5">5 — Excellent</option>
+            <option value="4">4 — Good</option>
+            <option value="3">3 — Average</option>
+            <option value="2">2 — Fair</option>
+            <option value="1">1 — Poor</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="comment">Comment (Optional)</label>
+          <textarea class="form-textarea" id="comment" name="comment" maxlength="1000" placeholder="Share your experience with the ride or driver (max 1000 characters)"></textarea>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn primary">Submit Feedback</button>
+        </div>
+      </form>
+    {% else %}
+      <div class="empty-state">
+        <h3>No Completed Rides Awaiting Feedback</h3>
+        <p>Feedback can only be submitted once per completed booking on a completed ride.</p>
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

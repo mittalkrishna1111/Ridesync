@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block title %}About | RideSync{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div class="page-kicker">College Ride Sharing Platform</div>
+  <h1 class="page-title">About RideSync</h1>
+  <p class="page-subtitle">Share Seats, Share Safety. Ride Together, Reach Together.</p>
+</div>
+
+<div class="grid-3">
+  <div class="glass-card">
+    <h3>Campus Commuting</h3>
+    <p class="card-muted mt-1">
+      RideSync helps college students travelling along the same route connect for daily home-to-campus and campus-to-home trips using structured pickup and drop points.
+    </p>
+  </div>
+
+  <div class="glass-card">
+    <h3>Ride Sharing</h3>
+    <p class="card-muted mt-1">
+      Students with registered vehicles can offer empty seats on upcoming rides, review incoming seat requests, and manage bookings in one place.
+    </p>
+  </div>
+
+  <div class="glass-card">
+    <h3>Fair Cost Sharing</h3>
+    <p class="card-muted mt-1">
+      Drivers set a clear price per seat when posting a ride, and seekers see the exact total fare calculation before sending a ride request.
+    </p>
+  </div>
+</div>
+
+<div class="glass-card mt-3">
+  <h2>How RideSync Works</h2>
+  <div class="grid-2 mt-2">
+    <div>
+      <h3>For Ride Seekers</h3>
+      <p class="card-muted mt-1">
+        Browse upcoming active rides or search by pickup location, destination, date, preferred time, and required seats. Matching rides are ranked by time proximity and driver ratings. Send a request, track approval, view driver contact and vehicle details once booked, and rate completed rides.
+      </p>
+    </div>
+    <div>
+      <h3>For Ride Givers</h3>
+      <p class="card-muted mt-1">
+        Register your vehicle, post rides with available passenger seats and per-seat pricing, accept or reject incoming requests with automatic seat updates, and view feedback from fellow students.
+      </p>
+    </div>
+  </div>
+  <div class="form-actions mt-3">
+    <a href="{{ url_for('register') }}" class="btn primary">Create an account</a>
+    <a href="{{ url_for('safety') }}" class="btn outline">Safety Features</a>
+  </div>
+</div>
+{% endblock %}

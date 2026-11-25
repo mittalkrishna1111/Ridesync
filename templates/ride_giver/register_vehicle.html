@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% from 'components/sidebar.html' import user_sidebar %}
+{% block title %}Register Vehicle | RideSync{% endblock %}
+
+{% block content %}
+<div class="portal-layout">
+  {{ user_sidebar('register_vehicle') }}
+
+  <div class="portal-content">
+    <div class="page-header">
+      <div class="page-kicker">Ride Giver</div>
+      <h1 class="page-title">Register a New Vehicle</h1>
+      <p class="page-subtitle">Add your vehicle details before offering a ride. Driver seat is not included in seating capacity.</p>
+    </div>
+
+    <form method="POST" action="{{ url_for('giver_register_vehicle') }}" class="form-card" style="max-width:580px;">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+      <div class="form-group">
+        <label class="form-label" for="vehicle_name">Vehicle Name</label>
+        <input class="form-control" type="text" id="vehicle_name" name="vehicle_name" maxlength="80" value="{{ form_data.get('vehicle_name', '') }}" placeholder="e.g., Honda City" required>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="registration_number">Registration Number</label>
+        <input class="form-control" type="text" id="registration_number" name="registration_number" maxlength="20" value="{{ form_data.get('registration_number', '') }}" placeholder="e.g., UP16AB1234" required>
+        <span class="form-hint">Up to 20 alphanumeric characters, no spaces or special characters.</span>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="seating_capacity">Passenger Seating Capacity</label>
+        <input class="form-control" type="number" id="seating_capacity" name="seating_capacity" min="1" max="255" value="{{ form_data.get('seating_capacity', '') }}" placeholder="Excluding driver seat" required>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn primary">Register Vehicle</button>
+        <a href="{{ url_for('giver_vehicles') }}" class="btn outline">View My Vehicles</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

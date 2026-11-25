@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% from 'components/sidebar.html' import user_sidebar %}
+{% from 'components/status_badge.html' import status_badge %}
+{% block title %}Ride History | RideSync{% endblock %}
+
+{% block content %}
+<div class="portal-layout">
+  {{ user_sidebar('seeker_history') }}
+
+  <div class="portal-content">
+    <div class="page-header">
+      <div class="page-kicker">Ride Seeker</div>
+      <h1 class="page-title">My Ride History</h1>
+      <p class="page-subtitle">Complete history of your RideSync bookings.</p>
+    </div>
+
+    {% if bookings %}
+      <div class="table-wrap">
+        <table class="rs-table">
+          <thead>
+            <tr>
+              <th>Booking ID</th>
+              <th>Ride ID</th>
+              <th>Route</th>
+              <th>Driver</th>
+              <th>Date &amp; Time</th>
+              <th>Seats</th>
+              <th>Total Fare</th>
+              <th>Booking Status</th>
+              <th>Ride Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for b in bookings %}
+              <tr>
+                <td>#{{ b.booking_id }}</td>
+                <td>#{{ b.ride_id }}</td>
+                <td>{{ b.pickup_city }} &rarr; {{ b.destination_city }}</td>
+                <td>{{ b.driver_name }}</td>
+                <td>{{ b.ride_date }} {{ b.ride_time_fmt }}</td>
+                <td>{{ b.seats_booked }}</td>
+                <td>Rs. {{ b.total_fare }}</td>
+                <td>{{ status_badge(b.booking_status) }}</td>
+                <td>{{ status_badge(b.ride_status) }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <div class="empty-state">
+        <h3>No Ride History</h3>
+        <p>You have no booking records yet.</p>
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

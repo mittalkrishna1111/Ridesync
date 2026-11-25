@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% from 'components/sidebar.html' import user_sidebar %}
+{% block title %}Manage Requests | RideSync{% endblock %}
+
+{% block content %}
+<div class="portal-layout">
+  {{ user_sidebar('manage_requests') }}
+
+  <div class="portal-content">
+    <div class="page-header">
+      <div class="page-kicker">Ride Giver</div>
+      <h1 class="page-title">Manage Incoming Ride Requests</h1>
+      <p class="page-subtitle">Accepting a request confirms a booking and updates available seats automatically.</p>
+    </div>
+
+    {% if requests_list %}
+      <div class="grid-2">
+        {% for req in requests_list %}
+          <div class="ride-card">
+            <div class="ride-card-header">
+              <div>
+                <div class="ride-route">Request #{{ req.request_id }} &bull; Ride #{{ req.ride_id }}</div>
+                <div class="card-muted">{{ req.pickup_city }} ({{ req.pickup_point }}) &rarr; {{ req.destination_city }} ({{ req.destination_point }})</div>
+              </div>
+              <span class="badge badge-pending">PENDING</span>
+            </div>
+            <div class="ride-meta">
+              <span><strong>Passenger:</strong> {{ req.passenger_name }}</span>
+              <span><strong>Email:</strong> {{ req.passenger_email }}</span>
+              <span><strong>Seats Requested:</strong> {{ req.seats_requested }}</span>
+              <span><strong>Ride Available Seats:</strong> {{ req.available_seats }}</span>
+              <span><strong>Date &amp; Time:</strong> {{ req.ride_date }} at {{ req.ride_time_fmt }}</span>
+              <span><strong>Price/Seat:</strong> Rs. {{ req.price_per_seat }}</span>
+            </div>
+            <div class="ride-actions">
+              <form method="POST" action="{{ url_for('giver_respond_request', request_id=req.request_id, action='accept') }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit" class="btn primary btn-sm">Accept Request</button>
+              </form>
+              <form method="POST" action="{{ url_for('giver_respond_request', request_id=req.request_id, action='reject') }}" data-confirm="Reject Request #{{ req.request_id }}?">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit" class="btn danger btn-sm">Reject Request</button>
+              </form>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="empty-state">
+        <h3>No Pending Ride Requests</h3>
+        <p>You have no pending incoming requests for your active rides.</p>
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

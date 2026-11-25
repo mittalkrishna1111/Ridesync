@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block title %}Admin Login | RideSync{% endblock %}
+
+{% block content %}
+<div class="auth-shell">
+  <div class="page-header" style="text-align:center;">
+    <div class="page-kicker">Admin Portal</div>
+    <h1 class="page-title">Admin Authentication</h1>
+    <p class="page-subtitle" style="margin:6px auto 0;">Enter the Admin Portal Access Password and your numeric Admin ID credentials.</p>
+  </div>
+
+  <form method="POST" action="{{ url_for('admin_login') }}" class="form-card">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+    <div class="form-group">
+      <label class="form-label" for="portal_password">Admin Portal Access Password</label>
+      <input class="form-control" type="password" id="portal_password" name="portal_password" placeholder="Enter portal access password" required>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="admin_id">Admin ID</label>
+      <input class="form-control" type="number" id="admin_id" name="admin_id" value="{{ form_data.get('admin_id', '') }}" placeholder="Numeric Admin ID" required>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="password">Admin Password</label>
+      <input class="form-control" type="password" id="password" name="password" placeholder="Enter admin password" required>
+      <span class="form-hint">Maximum 5 failed attempts before a 5-minute lockout.</span>
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="btn primary btn-block">Sign in as Admin</button>
+    </div>
+
+    <p class="have" style="text-align:center; margin-top:18px;">
+      Need a new admin account? <a href="{{ url_for('admin_register_portal') }}">Register New Admin</a>
+    </p>
+  </form>
+</div>
+{% endblock %}

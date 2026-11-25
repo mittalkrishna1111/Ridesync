@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block title %}Safety | RideSync{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div class="page-kicker">Share Seats, Share Safety</div>
+  <h1 class="page-title">Platform Safety &amp; Trust</h1>
+  <p class="page-subtitle">Built-in account, booking, and moderation controls in RideSync.</p>
+</div>
+
+<div class="grid-2">
+  <div class="glass-card">
+    <h3>College Account Registration</h3>
+    <p class="card-muted mt-1">
+      Users register with their full name, College ID, email address (Gmail or Bennett University email), and a 10-digit phone number, with duplicate checks enforced in the database.
+    </p>
+  </div>
+
+  <div class="glass-card">
+    <h3>Account Lockout &amp; Status Controls</h3>
+    <p class="card-muted mt-1">
+      Accounts are protected against repeated failed login attempts (temporary 15-minute lockout after 5 incorrect attempts for users) and can be marked ACTIVE, BLOCKED, or INACTIVE by administrators.
+    </p>
+  </div>
+
+  <div class="glass-card">
+    <h3>Driver Approval &amp; Vehicle Records</h3>
+    <p class="card-muted mt-1">
+      Every ride is tied to a registered vehicle with a unique registration number and seating capacity. Drivers explicitly accept or reject ride requests before a booking is confirmed.
+    </p>
+  </div>
+
+  <div class="glass-card">
+    <h3>Transparent Ratings &amp; Admin Oversight</h3>
+    <p class="card-muted mt-1">
+      Ride seekers can submit 1–5 star ratings and comments for completed rides, and administrators can review reports, monitor active rides, manage accounts/vehicles, and inspect audit records.
+    </p>
+  </div>
+</div>
+{% endblock %}

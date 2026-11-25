@@ -1,0 +1,126 @@
+{% extends 'base.html' %}
+{% from 'components/sidebar.html' import user_sidebar %}
+{% from 'components/status_badge.html' import status_badge %}
+{% block title %}Update Ride #{{ ride.ride_id }} | RideSync{% endblock %}
+
+{% block content %}
+<div class="portal-layout">
+  {{ user_sidebar('my_rides') }}
+
+  <div class="portal-content">
+    <div class="page-header">
+      <div class="page-kicker">Ride Giver</div>
+      <h1 class="page-title">Update Ride #{{ ride.ride_id }}</h1>
+      <p class="page-subtitle">
+        {{ ride.vehicle_name }} ({{ ride.registration_number }}) &bull; {{ status_badge(ride.ride_status) }}
+        &bull; Booked Seats: {{ ride.booked_seats }} &bull; Confirmed Bookings: {{ ride.confirmed_bookings }}
+      </p>
+    </div>
+
+    {% if ride.confirmed_bookings > 0 %}
+      <div class="alert alert-warning mb-3">
+        <span>This ride has {{ ride.confirmed_bookings }} confirmed booking(s). Pickup location, destination location, date, and time cannot be changed.</span>
+      </div>
+    {% endif %}
+
+    <div class="grid-2">
+      {% if ride.confirmed_bookings == 0 %}
+        <form method="POST" action="{{ url_for('giver_update_ride', ride_id=ride.ride_id) }}" class="form-card">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <input type="hidden" name="update_type" value="pickup">
+          <h3 class="mb-2">Update Pickup Location</h3>
+          <div class="form-group">
+            <label class="form-label" for="pickup_loc">Pickup Location</label>
+            <select class="form-select" id="pickup_loc" name="location_id" data-location-select="updPickupNew" required>
+              {% for loc in locations %}
+                <option value="{{ loc.location_id }}" {% if loc.location_id == ride.pickup_location_id %}selected{% endif %}>
+                  {{ loc.city }} — {{ loc.area }}, {{ loc.point_name }}
+                </option>
+              {% endfor %}
+              <option value="__new__">+ Enter a New Location</option>
+            </select>
+            <div class="new-location-panel" id="updPickupNew" style="display:none;">
+              <div class="form-group"><label class="form-label">City</label><input class="form-control" type="text" name="city" data-required-when-new></div>
+              <div class="form-group"><label class="form-label">Region (Optional)</label><input class="form-control" type="text" name="region"></div>
+              <div class="form-group"><label class="form-label">Area</label><input class="form-control" type="text" name="area" data-required-when-new></div>
+              <div class="form-group" style="margin-bottom:0;"><label class="form-label">Point Name</label><input class="form-control" type="text" name="point_name" data-required-when-new></div>
+            </div>
+          </div>
+          <button type="submit" class="btn primary btn-sm">Save Pickup</button>
+        </form>
+
+        <form method="POST" action="{{ url_for('giver_update_ride', ride_id=ride.ride_id) }}" class="form-card">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <input type="hidden" name="update_type" value="destination">
+          <h3 class="mb-2">Update Destination Location</h3>
+          <div class="form-group">
+            <label class="form-label" for="dest_loc">Destination Location</label>
+            <select class="form-select" id="dest_loc" name="location_id" data-location-select="updDestNew" required>
+              {% for loc in locations %}
+                <option value="{{ loc.location_id }}" {% if loc.location_id == ride.destination_location_id %}selected{% endif %}>
+                  {{ loc.city }} — {{ loc.area }}, {{ loc.point_name }}
+                </option>
+              {% endfor %}
+              <option value="__new__">+ Enter a New Location</option>
+            </select>
+            <div class="new-location-panel" id="updDestNew" style="display:none;">
+              <div class="form-group"><label class="form-label">City</label><input class="form-control" type="text" name="city" data-required-when-new></div>
+              <div class="form-group"><label class="form-label">Region (Optional)</label><input class="form-control" type="text" name="region"></div>
+              <div class="form-group"><label class="form-label">Area</label><input class="form-control" type="text" name="area" data-required-when-new></div>
+              <div class="form-group" style="margin-bottom:0;"><label class="form-label">Point Name</label><input class="form-control" type="text" name="point_name" data-required-when-new></div>
+            </div>
+          </div>
+          <button type="submit" class="btn primary btn-sm">Save Destination</button>
+        </form>
+
+        <form method="POST" action="{{ url_for('giver_update_ride', ride_id=ride.ride_id) }}" class="form-card">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <input type="hidden" name="update_type" value="datetime">
+          <h3 class="mb-2">Update Ride Date &amp; Time</h3>
+          <div class="form-group">
+            <label class="form-label" for="ride_date">Ride Date</label>
+            <input class="form-control" type="date" id="ride_date" name="ride_date" value="{{ ride.ride_date }}" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="ride_time">Ride Time (24h)</label>
+            <div class="clock-input-wrap">
+              <input class="form-control clock-input" type="text" id="ride_time" name="ride_time" value="{{ ride.ride_time_fmt }}" placeholder="HH:MM" pattern="^([01]\d|2[0-3]):[0-5]\d$" data-clock-picker readonly required>
+              <button type="button" class="clock-trigger-btn" aria-label="Open clock picker" data-clock-for="ride_time">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              </button>
+            </div>
+          </div>
+          <button type="submit" class="btn primary btn-sm">Save Date &amp; Time</button>
+        </form>
+      {% endif %}
+
+      <form method="POST" action="{{ url_for('giver_update_ride', ride_id=ride.ride_id) }}" class="form-card">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <input type="hidden" name="update_type" value="seats">
+        <h3 class="mb-2">Update Passenger Seats</h3>
+        <div class="form-group">
+          <label class="form-label" for="total_seats">Total Passenger Seats</label>
+          <input class="form-control" type="number" id="total_seats" name="total_seats" min="{{ [1, ride.booked_seats]|max }}" max="{{ ride.seating_capacity }}" value="{{ ride.total_seats }}" required>
+          <span class="form-hint">Allowed: {{ [1, ride.booked_seats]|max }} to {{ ride.seating_capacity }} (Already booked: {{ ride.booked_seats }}).</span>
+        </div>
+        <button type="submit" class="btn primary btn-sm">Save Seats</button>
+      </form>
+
+      <form method="POST" action="{{ url_for('giver_update_ride', ride_id=ride.ride_id) }}" class="form-card">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <input type="hidden" name="update_type" value="price">
+        <h3 class="mb-2">Update Price Per Seat</h3>
+        <div class="form-group">
+          <label class="form-label" for="price_per_seat">Price Per Seat (Rs.)</label>
+          <input class="form-control" type="number" step="0.01" min="0.01" max="99999999.99" id="price_per_seat" name="price_per_seat" value="{{ ride.price_per_seat }}" required>
+        </div>
+        <button type="submit" class="btn primary btn-sm">Save Price</button>
+      </form>
+    </div>
+
+    <div class="mt-3">
+      <a href="{{ url_for('giver_rides') }}" class="btn outline btn-sm">&larr; Back to My Posted Rides</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

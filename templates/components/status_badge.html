@@ -1,0 +1,4 @@
+{% macro status_badge(status) -%}
+  {%- set s = (status or '')|string -%}
+  <span class="badge badge-{{ s|lower }}">{{ s.replace('_', ' ') }}</span>
+{%- endmacro %}

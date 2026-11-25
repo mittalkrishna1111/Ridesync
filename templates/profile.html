@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% from 'components/sidebar.html' import user_sidebar %}
+{% from 'components/status_badge.html' import status_badge %}
+{% block title %}My Profile | RideSync{% endblock %}
+
+{% block content %}
+<div class="portal-layout">
+  {{ user_sidebar('profile') }}
+
+  <div class="portal-content">
+    <div class="page-header">
+      <div class="page-kicker">Account</div>
+      <h1 class="page-title">My Profile</h1>
+      <p class="page-subtitle">Your registered RideSync account details.</p>
+    </div>
+
+    <div class="glass-card">
+      <div class="grid-2">
+        <div>
+          <div class="stat-label">Full Name</div>
+          <p class="mt-1">{{ user.full_name }}</p>
+        </div>
+        <div>
+          <div class="stat-label">Account Status</div>
+          <p class="mt-1">{{ status_badge(user.account_status) }}</p>
+        </div>
+        <div>
+          <div class="stat-label">College ID</div>
+          <p class="mt-1">{{ user.college_id }}</p>
+        </div>
+        <div>
+          <div class="stat-label">Email Address</div>
+          <p class="mt-1">{{ user.email }}</p>
+        </div>
+        <div>
+          <div class="stat-label">Phone Number</div>
+          <p class="mt-1">{{ user.phone }}</p>
+        </div>
+        <div>
+          <div class="stat-label">Member Since</div>
+          <p class="mt-1">{{ user.created_at }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

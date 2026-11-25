@@ -1,0 +1,137 @@
+{% extends 'base.html' %}
+{% from 'components/sidebar.html' import user_sidebar %}
+{% block title %}Offer a Ride | RideSync{% endblock %}
+
+{% block content %}
+<div class="portal-layout">
+  {{ user_sidebar('offer_ride') }}
+
+  <div class="portal-content">
+    <div class="page-header">
+      <div class="page-kicker">Ride Giver</div>
+      <h1 class="page-title">Offer a New Ride</h1>
+      <p class="page-subtitle">Post an upcoming ride using one of your active registered vehicles.</p>
+    </div>
+
+    {% if not vehicles %}
+      <div class="empty-state">
+        <h3>No Active Registered Vehicles</h3>
+        <p>You need at least one ACTIVE vehicle to post a ride.</p>
+        <a href="{{ url_for('giver_register_vehicle') }}" class="btn primary btn-sm">Register a Vehicle</a>
+      </div>
+    {% else %}
+      <form method="POST" action="{{ url_for('giver_offer_ride') }}" class="form-card">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+        <div class="form-grid">
+          <div class="form-group full-span">
+            <label class="form-label" for="vehicle_id">Select Registered Vehicle</label>
+            <select class="form-select" id="vehicle_id" name="vehicle_id" required>
+              <option value="">Choose a vehicle</option>
+              {% for v in vehicles %}
+                <option value="{{ v.vehicle_id }}" {% if form_data.get('vehicle_id') == v.vehicle_id|string %}selected{% endif %}>
+                  {{ v.vehicle_name }} ({{ v.registration_number }}) — Max {{ v.seating_capacity }} passenger seat(s)
+                </option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="pickup_choice">Pickup Location</label>
+            <select class="form-select" id="pickup_choice" name="pickup_choice" data-location-select="newPickupPanel" required>
+              <option value="">Select pickup location</option>
+              {% for loc in locations %}
+                <option value="{{ loc.location_id }}" {% if form_data.get('pickup_choice') == loc.location_id|string %}selected{% endif %}>
+                  {{ loc.city }} — {{ loc.area }}, {{ loc.point_name }}
+                </option>
+              {% endfor %}
+              <option value="__new__" {% if form_data.get('pickup_choice') == '__new__' %}selected{% endif %}>+ Enter a New Location</option>
+            </select>
+
+            <div class="new-location-panel" id="newPickupPanel" style="display:none;">
+              <div class="form-group">
+                <label class="form-label" for="pickup_city">City</label>
+                <input class="form-control" type="text" id="pickup_city" name="pickup_city" maxlength="80" value="{{ form_data.get('pickup_city', '') }}" data-required-when-new>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="pickup_region">Region / State (Optional)</label>
+                <input class="form-control" type="text" id="pickup_region" name="pickup_region" maxlength="80" value="{{ form_data.get('pickup_region', '') }}">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="pickup_area">Area</label>
+                <input class="form-control" type="text" id="pickup_area" name="pickup_area" maxlength="100" value="{{ form_data.get('pickup_area', '') }}" data-required-when-new>
+              </div>
+              <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label" for="pickup_point_name">Pickup Point Name</label>
+                <input class="form-control" type="text" id="pickup_point_name" name="pickup_point_name" maxlength="150" value="{{ form_data.get('pickup_point_name', '') }}" data-required-when-new>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="dest_choice">Destination Location</label>
+            <select class="form-select" id="dest_choice" name="dest_choice" data-location-select="newDestPanel" required>
+              <option value="">Select destination location</option>
+              {% for loc in locations %}
+                <option value="{{ loc.location_id }}" {% if form_data.get('dest_choice') == loc.location_id|string %}selected{% endif %}>
+                  {{ loc.city }} — {{ loc.area }}, {{ loc.point_name }}
+                </option>
+              {% endfor %}
+              <option value="__new__" {% if form_data.get('dest_choice') == '__new__' %}selected{% endif %}>+ Enter a New Location</option>
+            </select>
+
+            <div class="new-location-panel" id="newDestPanel" style="display:none;">
+              <div class="form-group">
+                <label class="form-label" for="dest_city">City</label>
+                <input class="form-control" type="text" id="dest_city" name="dest_city" maxlength="80" value="{{ form_data.get('dest_city', '') }}" data-required-when-new>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="dest_region">Region / State (Optional)</label>
+                <input class="form-control" type="text" id="dest_region" name="dest_region" maxlength="80" value="{{ form_data.get('dest_region', '') }}">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="dest_area">Area</label>
+                <input class="form-control" type="text" id="dest_area" name="dest_area" maxlength="100" value="{{ form_data.get('dest_area', '') }}" data-required-when-new>
+              </div>
+              <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label" for="dest_point_name">Drop Point Name</label>
+                <input class="form-control" type="text" id="dest_point_name" name="dest_point_name" maxlength="150" value="{{ form_data.get('dest_point_name', '') }}" data-required-when-new>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="ride_date">Ride Date</label>
+            <input class="form-control" type="date" id="ride_date" name="ride_date" value="{{ form_data.get('ride_date', '') }}" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="ride_time">Ride Time (24h)</label>
+            <div class="clock-input-wrap">
+              <input class="form-control clock-input" type="text" id="ride_time" name="ride_time" value="{{ form_data.get('ride_time', '') }}" placeholder="HH:MM" pattern="^([01]\d|2[0-3]):[0-5]\d$" data-clock-picker readonly required>
+              <button type="button" class="clock-trigger-btn" aria-label="Open clock picker" data-clock-for="ride_time">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="available_seats">Available Passenger Seats</label>
+            <input class="form-control" type="number" id="available_seats" name="available_seats" min="1" max="255" value="{{ form_data.get('available_seats', '') }}" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="price_per_seat">Price Per Seat (Rs.)</label>
+            <input class="form-control" type="number" step="0.01" min="0.01" max="99999999.99" id="price_per_seat" name="price_per_seat" value="{{ form_data.get('price_per_seat', '') }}" placeholder="e.g., 120.00" required>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn primary">Post Ride</button>
+          <a href="{{ url_for('giver_rides') }}" class="btn outline">Cancel</a>
+        </div>
+      </form>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

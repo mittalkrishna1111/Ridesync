@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% from 'components/sidebar.html' import admin_sidebar %}
+{% block title %}Driver Feedback | RideSync Admin{% endblock %}
+
+{% block content %}
+<div class="portal-layout">
+  {{ admin_sidebar('admin_feedback') }}
+
+  <div class="portal-content">
+    <div class="page-header">
+      <div class="page-kicker">Admin Portal</div>
+      <h1 class="page-title">Driver Feedback</h1>
+      <p class="page-subtitle">All ratings and comments recorded in Ratings_Feedback.</p>
+    </div>
+
+    {% if feedbacks %}
+      <div class="table-wrap">
+        <table class="rs-table">
+          <thead>
+            <tr>
+              <th>Feedback ID</th>
+              <th>Booking</th>
+              <th>Ride</th>
+              <th>Driver</th>
+              <th>Seeker ID</th>
+              <th>Rating</th>
+              <th>Comment</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for fb in feedbacks %}
+              <tr>
+                <td>#{{ fb.feedback_id }}</td>
+                <td>#{{ fb.booking_id }}</td>
+                <td>#{{ fb.ride_id }}</td>
+                <td>{{ fb.driver_name or 'Unknown' }} (#{{ fb.driver_id }})</td>
+                <td>#{{ fb.seeker_id }}</td>
+                <td class="rating-stars">&#9733; {{ fb.rating }} / 5</td>
+                <td>{{ fb.comment or '—' }}</td>
+                <td>{{ fb.created_at }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <div class="empty-state">
+        <h3>No Feedback Available</h3>
+        <p>No ratings or feedback have been submitted yet.</p>
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

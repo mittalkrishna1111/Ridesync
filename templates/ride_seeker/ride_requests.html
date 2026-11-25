@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% from 'components/sidebar.html' import user_sidebar %}
+{% from 'components/status_badge.html' import status_badge %}
+{% block title %}My Ride Requests | RideSync{% endblock %}
+
+{% block content %}
+<div class="portal-layout">
+  {{ user_sidebar('seeker_requests') }}
+
+  <div class="portal-content">
+    <div class="page-header">
+      <div class="page-kicker">Ride Seeker</div>
+      <h1 class="page-title">My Ride Requests</h1>
+      <p class="page-subtitle">Track the status of all seat requests you have sent to drivers.</p>
+    </div>
+
+    {% if requests_list %}
+      <div class="table-wrap">
+        <table class="rs-table">
+          <thead>
+            <tr>
+              <th>Request ID</th>
+              <th>Ride</th>
+              <th>Route</th>
+              <th>Driver</th>
+              <th>Date &amp; Time</th>
+              <th>Seats</th>
+              <th>Est. Fare</th>
+              <th>Status</th>
+              <th>Requested At</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for req in requests_list %}
+              <tr>
+                <td>#{{ req.request_id }}</td>
+                <td>#{{ req.ride_id }}</td>
+                <td>{{ req.pickup_city }} ({{ req.pickup_point }}) &rarr; {{ req.destination_city }} ({{ req.destination_point }})</td>
+                <td>{{ req.driver_name }}</td>
+                <td>{{ req.ride_date }} {{ req.ride_time_fmt }}</td>
+                <td>{{ req.seats_requested }}</td>
+                <td>Rs. {{ req.total_fare }}</td>
+                <td>{{ status_badge(req.request_status) }}</td>
+                <td>{{ req.requested_at }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <div class="empty-state">
+        <h3>No Ride Requests Yet</h3>
+        <p>You have not sent any ride requests yet. Search for available rides to get started.</p>
+        <a href="{{ url_for('seeker_find_rides') }}" class="btn primary btn-sm">Find Rides</a>
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

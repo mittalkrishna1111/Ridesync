@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% from 'components/sidebar.html' import user_sidebar %}
+{% block title %}Received Feedback | RideSync{% endblock %}
+
+{% block content %}
+<div class="portal-layout">
+  {{ user_sidebar('received_feedback') }}
+
+  <div class="portal-content">
+    <div class="page-header">
+      <div class="page-kicker">Ride Giver</div>
+      <h1 class="page-title">Received Feedback</h1>
+      <p class="page-subtitle">Ratings and comments submitted by passengers on your completed rides.</p>
+    </div>
+
+    {% if feedbacks %}
+      <div class="grid-2">
+        {% for fb in feedbacks %}
+          <div class="glass-card">
+            <div class="ride-card-header">
+              <div>
+                <h3>{{ fb.passenger_name }}</h3>
+                <div class="card-muted">Feedback #{{ fb.feedback_id }} &bull; Booking #{{ fb.booking_id }} &bull; Ride #{{ fb.ride_id }}</div>
+              </div>
+              <span class="rating-stars">&#9733; {{ fb.rating }} / 5</span>
+            </div>
+            <p class="mt-2 card-muted">{{ fb.comment or 'No comment provided' }}</p>
+            <div class="card-muted mt-1" style="font-size:12px;">{{ fb.created_at }}</div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="empty-state">
+        <h3>No Feedback Received Yet</h3>
+        <p>Passenger ratings and comments for your completed rides will appear here.</p>
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

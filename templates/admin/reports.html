@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% from 'components/sidebar.html' import admin_sidebar %}
+{% from 'components/status_badge.html' import status_badge %}
+{% block title %}Manage Reports | RideSync Admin{% endblock %}
+
+{% block content %}
+<div class="portal-layout">
+  {{ admin_sidebar('admin_reports') }}
+
+  <div class="portal-content">
+    <div class="page-header">
+      <div class="page-kicker">Admin Portal</div>
+      <h1 class="page-title">Manage Reports &amp; Complaints</h1>
+      <p class="page-subtitle">Review reports and update their status and admin remarks.</p>
+    </div>
+
+    {% if reports %}
+      <div class="grid-2">
+        {% for rep in reports %}
+          <div class="glass-card">
+            <div class="ride-card-header">
+              <div>
+                <h3>Report #{{ rep.report_id }}</h3>
+                <div class="card-muted">
+                  Reported By: User #{{ rep.reported_by }}
+                  {% if rep.related_user_id %} &bull; Related User: #{{ rep.related_user_id }}{% endif %}
+                  {% if rep.ride_id %} &bull; Ride: #{{ rep.ride_id }}{% endif %}
+                </div>
+              </div>
+              {{ status_badge(rep.report_status) }}
+            </div>
+            <p class="mt-2">{{ rep.description }}</p>
+            <div class="card-muted mt-1" style="font-size:12px;">
+              Created: {{ rep.created_at }}
+              {% if rep.resolved_at %} &bull; Resolved: {{ rep.resolved_at }}{% endif %}
+            </div>
+
+            <form method="POST" action="{{ url_for('admin_report_update', report_id=rep.report_id) }}" class="divider-box">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+              <div class="form-group">
+                <label class="form-label">Report Status</label>
+                <select class="form-select" name="report_status">
+                  <option value="PENDING" {% if rep.report_status == 'PENDING' %}selected{% endif %}>PENDING</option>
+                  <option value="UNDER_REVIEW" {% if rep.report_status == 'UNDER_REVIEW' %}selected{% endif %}>UNDER_REVIEW</option>
+                  <option value="RESOLVED" {% if rep.report_status == 'RESOLVED' %}selected{% endif %}>RESOLVED</option>
+                  <option value="REJECTED" {% if rep.report_status == 'REJECTED' %}selected{% endif %}>REJECTED</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Admin Action / Remarks</label>
+                <input class="form-control" type="text" name="admin_action" value="{{ rep.admin_action or '' }}" placeholder="Optional remarks">
+              </div>
+              <button type="submit" class="btn primary btn-sm">Update Report</button>
+            </form>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="empty-state">
+        <h3>No Reports Found</h3>
+        <p>There are no reports or complaints in the database.</p>
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

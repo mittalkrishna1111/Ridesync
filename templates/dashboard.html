@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% from 'components/sidebar.html' import user_sidebar %}
+{% block title %}Dashboard | RideSync{% endblock %}
+
+{% block content %}
+<div class="portal-layout">
+  {{ user_sidebar('dashboard') }}
+
+  <div class="portal-content">
+    <div class="page-header">
+      <div class="page-kicker">User Dashboard</div>
+      <h1 class="page-title">Welcome, {{ user.full_name }}</h1>
+      <p class="page-subtitle">Manage your campus commutes as a Ride Seeker or Ride Giver.</p>
+    </div>
+
+    <div class="grid-4 mb-3">
+      <div class="stat-card">
+        <div class="stat-label">Confirmed Bookings</div>
+        <div class="stat-value">{{ stats.confirmed_bookings }}</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Pending Sent Requests</div>
+        <div class="stat-value">{{ stats.pending_sent_requests }}</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Active Posted Rides</div>
+        <div class="stat-value">{{ stats.active_posted_rides }}</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Incoming Requests</div>
+        <div class="stat-value">{{ stats.incoming_requests }}</div>
+      </div>
+    </div>
+
+    <div class="grid-3">
+      <div class="action-card">
+        <div>
+          <h3>Find a Ride</h3>
+          <p class="card-muted mt-1">Search upcoming rides by route, date, time, and seats.</p>
+        </div>
+        <a href="{{ url_for('seeker_find_rides') }}" class="btn primary btn-sm">Find Rides</a>
+      </div>
+
+      <div class="action-card">
+        <div>
+          <h3>Offer a Ride</h3>
+          <p class="card-muted mt-1">Post empty seats in your registered vehicle.</p>
+        </div>
+        <a href="{{ url_for('giver_offer_ride') }}" class="btn primary btn-sm">Offer a Ride</a>
+      </div>
+
+      <div class="action-card">
+        <div>
+          <h3>My Bookings</h3>
+          <p class="card-muted mt-1">View confirmed bookings, driver details, or cancel.</p>
+        </div>
+        <a href="{{ url_for('seeker_bookings') }}" class="btn outline btn-sm">View Bookings</a>
+      </div>
+
+      <div class="action-card">
+        <div>
+          <h3>My Ride Requests</h3>
+          <p class="card-muted mt-1">Track pending, accepted, and rejected seat requests.</p>
+        </div>
+        <a href="{{ url_for('seeker_requests') }}" class="btn outline btn-sm">View Requests</a>
+      </div>
+
+      <div class="action-card">
+        <div>
+          <h3>My Vehicles ({{ stats.active_vehicles }})</h3>
+          <p class="card-muted mt-1">Register or manage your active vehicles.</p>
+        </div>
+        <a href="{{ url_for('giver_vehicles') }}" class="btn outline btn-sm">My Vehicles</a>
+      </div>
+
+      <div class="action-card">
+        <div>
+          <h3>My Posted Rides</h3>
+          <p class="card-muted mt-1">Review active rides, update details, or manage requests.</p>
+        </div>
+        <a href="{{ url_for('giver_rides') }}" class="btn outline btn-sm">Posted Rides</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

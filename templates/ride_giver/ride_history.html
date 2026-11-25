@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% from 'components/sidebar.html' import user_sidebar %}
+{% from 'components/status_badge.html' import status_badge %}
+{% block title %}Posted Ride History | RideSync{% endblock %}
+
+{% block content %}
+<div class="portal-layout">
+  {{ user_sidebar('giver_history') }}
+
+  <div class="portal-content">
+    <div class="page-header">
+      <div class="page-kicker">Ride Giver</div>
+      <h1 class="page-title">All Posted Rides History</h1>
+      <p class="page-subtitle">Complete history of all rides you have posted.</p>
+    </div>
+
+    {% if rides %}
+      <div class="table-wrap">
+        <table class="rs-table">
+          <thead>
+            <tr>
+              <th>Ride ID</th>
+              <th>Vehicle</th>
+              <th>Pickup</th>
+              <th>Destination</th>
+              <th>Date &amp; Time</th>
+              <th>Seats</th>
+              <th>Price/Seat</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for r in rides %}
+              <tr>
+                <td>#{{ r.ride_id }}</td>
+                <td>{{ r.vehicle_name }} ({{ r.registration_number }})</td>
+                <td>{{ r.pickup_city }}, {{ r.pickup_area }} ({{ r.pickup_point }})</td>
+                <td>{{ r.destination_city }}, {{ r.destination_area }} ({{ r.destination_point }})</td>
+                <td>{{ r.ride_date }} {{ r.ride_time_fmt }}</td>
+                <td>{{ r.available_seats }} / {{ r.total_seats }}</td>
+                <td>Rs. {{ r.price_per_seat }}</td>
+                <td>{{ status_badge(r.ride_status) }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <div class="empty-state">
+        <h3>No Posted Rides Yet</h3>
+        <p>You have not posted any rides yet.</p>
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

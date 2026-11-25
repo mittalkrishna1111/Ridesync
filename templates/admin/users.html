@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% from 'components/sidebar.html' import admin_sidebar %}
+{% from 'components/status_badge.html' import status_badge %}
+{% block title %}Manage Users | RideSync Admin{% endblock %}
+
+{% block content %}
+<div class="portal-layout">
+  {{ admin_sidebar('admin_users') }}
+
+  <div class="portal-content">
+    <div class="page-header">
+      <div class="page-kicker">Admin Portal</div>
+      <h1 class="page-title">Manage Users</h1>
+      <p class="page-subtitle">Update user account statuses (ACTIVE, BLOCKED, INACTIVE). Changes are logged to Audit_Records.</p>
+    </div>
+
+    {% if users %}
+      <div class="table-wrap">
+        <table class="rs-table">
+          <thead>
+            <tr>
+              <th>User ID</th>
+              <th>Name</th>
+              <th>College ID</th>
+              <th>Email</th>
+              <th>Phone</th>
+              <th>Status</th>
+              <th>Update Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for u in users %}
+              <tr>
+                <td>#{{ u.user_id }}</td>
+                <td>{{ u.full_name }}</td>
+                <td>{{ u.college_id }}</td>
+                <td>{{ u.email }}</td>
+                <td>{{ u.phone }}</td>
+                <td>{{ status_badge(u.account_status) }}</td>
+                <td>
+                  <form method="POST" action="{{ url_for('admin_user_status', user_id=u.user_id) }}" class="inline-form">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <select class="form-select" name="account_status" style="padding:7px 10px; font-size:12.5px; width:auto;">
+                      <option value="ACTIVE" {% if u.account_status == 'ACTIVE' %}selected{% endif %}>ACTIVE</option>
+                      <option value="BLOCKED" {% if u.account_status == 'BLOCKED' %}selected{% endif %}>BLOCKED</option>
+                      <option value="INACTIVE" {% if u.account_status == 'INACTIVE' %}selected{% endif %}>INACTIVE</option>
+                    </select>
+                    <button type="submit" class="btn primary btn-sm">Update</button>
+                  </form>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <div class="empty-state">
+        <h3>No Users Found</h3>
+        <p>No registered users exist in the database.</p>
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

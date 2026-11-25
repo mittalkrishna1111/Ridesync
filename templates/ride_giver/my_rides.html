@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% from 'components/sidebar.html' import user_sidebar %}
+{% from 'components/status_badge.html' import status_badge %}
+{% block title %}My Posted Rides | RideSync{% endblock %}
+
+{% block content %}
+<div class="portal-layout">
+  {{ user_sidebar('my_rides') }}
+
+  <div class="portal-content">
+    <div class="page-header">
+      <div class="page-kicker">Ride Giver</div>
+      <h1 class="page-title">My Active Posted Rides</h1>
+      <p class="page-subtitle">Your currently ACTIVE and FULL posted rides.</p>
+    </div>
+
+    {% if rides %}
+      <div class="grid-2">
+        {% for ride in rides %}
+          <div class="ride-card">
+            <div class="ride-card-header">
+              <div>
+                <div class="ride-route">Ride #{{ ride.ride_id }}: {{ ride.pickup_city }} ({{ ride.pickup_point }}) &rarr; {{ ride.destination_city }} ({{ ride.destination_point }})</div>
+                <div class="card-muted">{{ ride.vehicle_name }} ({{ ride.registration_number }})</div>
+              </div>
+              {{ status_badge(ride.ride_status) }}
+            </div>
+            <div class="ride-meta">
+              <span><strong>Date &amp; Time:</strong> {{ ride.ride_date }} at {{ ride.ride_time_fmt }}</span>
+              <span><strong>Seats:</strong> {{ ride.available_seats }} / {{ ride.total_seats }} available</span>
+              <span><strong>Price/Seat:</strong> Rs. {{ ride.price_per_seat }}</span>
+            </div>
+            <div class="ride-actions">
+              {% if ride.can_update %}
+                <a href="{{ url_for('giver_update_ride', ride_id=ride.ride_id) }}" class="btn outline btn-sm">Update Ride</a>
+              {% endif %}
+              <a href="{{ url_for('giver_requests') }}" class="btn primary btn-sm">Manage Requests</a>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="empty-state">
+        <h3>No Active or Full Posted Rides</h3>
+        <p>You have no upcoming active or full rides posted right now.</p>
+        <a href="{{ url_for('giver_offer_ride') }}" class="btn primary btn-sm">Offer a Ride</a>
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% from 'components/sidebar.html' import user_sidebar %}
+{% from 'components/status_badge.html' import status_badge %}
+{% block title %}Ride #{{ ride.ride_id }} | RideSync{% endblock %}
+
+{% block content %}
+<div class="portal-layout">
+  {{ user_sidebar('find_rides') }}
+
+  <div class="portal-content">
+    <div class="page-header">
+      <div class="page-kicker">Ride Details</div>
+      <h1 class="page-title">Ride #{{ ride.ride_id }}</h1>
+      <p class="page-subtitle">{{ ride.pickup_city }}, {{ ride.pickup_area }} ({{ ride.pickup_point }}) &rarr; {{ ride.destination_city }}, {{ ride.destination_area }} ({{ ride.destination_point }})</p>
+    </div>
+
+    <div class="grid-2">
+      <div class="glass-card">
+        <div class="ride-card-header mb-2">
+          <h2>Trip Information</h2>
+          {{ status_badge(ride.ride_status) }}
+        </div>
+        <div class="ride-meta" style="flex-direction:column; gap:10px;">
+          <span><strong>Pickup:</strong> {{ ride.pickup_city }}{% if ride.pickup_region %}, {{ ride.pickup_region }}{% endif %} — {{ ride.pickup_area }}, {{ ride.pickup_point }}</span>
+          <span><strong>Destination:</strong> {{ ride.destination_city }}{% if ride.destination_region %}, {{ ride.destination_region }}{% endif %} — {{ ride.destination_area }}, {{ ride.destination_point }}</span>
+          <span><strong>Date:</strong> {{ ride.ride_date }}</span>
+          <span><strong>Time:</strong> {{ ride.ride_time_fmt }}</span>
+          <span><strong>Available Seats:</strong> {{ ride.available_seats }} of {{ ride.total_seats }}</span>
+          <span><strong>Price Per Seat:</strong> Rs. {{ ride.price_per_seat }}</span>
+          <span><strong>Driver:</strong> {{ ride.driver_name }}
+            <span class="rating-stars">
+              {% if ride.total_ratings > 0 %}
+                (&#9733; {{ "%.2f"|format(ride.average_rating) }} / 5 from {{ ride.total_ratings }} rating(s))
+              {% else %}
+                (No ratings yet)
+              {% endif %}
+            </span>
+          </span>
+          <span><strong>Vehicle:</strong> {{ ride.vehicle_name }} ({{ ride.registration_number }})</span>
+        </div>
+      </div>
+
+      <div class="form-card">
+        <h2>Request Seats</h2>
+        {% if ride.driver_id == current_user_id %}
+          <p class="card-muted mt-2">This is your own ride. You cannot request seats on a ride you posted.</p>
+          <div class="form-actions">
+            <a href="{{ url_for('giver_update_ride', ride_id=ride.ride_id) }}" class="btn outline">Manage This Ride</a>
+          </div>
+        {% elif ride.ride_status != 'ACTIVE' or ride.available_seats <= 0 %}
+          <p class="card-muted mt-2">This ride is currently {{ ride.ride_status }} and is not accepting new requests.</p>
+        {% else %}
+          <form method="POST" action="{{ url_for('seeker_request_ride', ride_id=ride.ride_id) }}" class="mt-2">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <input type="hidden" name="expected_price" value="{{ ride.price_per_seat }}">
+
+            <div class="form-group">
+              <label class="form-label" for="seats_requested">Seats Requested</label>
+              <input class="form-control" type="number" id="seats_requested" name="seats_requested" min="1" max="{{ ride.available_seats }}" value="1" required>
+              <span class="form-hint">Maximum {{ ride.available_seats }} seat(s) available.</span>
+            </div>
+
+            <div class="fare-summary mb-2">
+              <div>Price Per Seat: <strong>Rs. {{ ride.price_per_seat }}</strong></div>
+              <div>Estimated Total Fare: <strong id="farePreview" data-unit-price="{{ ride.price_per_seat }}">Rs. {{ ride.price_per_seat }}</strong></div>
+            </div>
+
+            <div class="form-actions">
+              <button type="submit" class="btn primary btn-block">Send Ride Request</button>
+            </div>
+          </form>
+        {% endif %}
+        <div class="mt-2">
+          <a href="{{ url_for('seeker_find_rides') }}" class="btn outline btn-sm">&larr; Back to Find Rides</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

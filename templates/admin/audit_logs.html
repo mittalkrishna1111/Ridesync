@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% from 'components/sidebar.html' import admin_sidebar %}
+{% block title %}Audit Records | RideSync Admin{% endblock %}
+
+{% block content %}
+<div class="portal-layout">
+  {{ admin_sidebar('admin_audit_logs') }}
+
+  <div class="portal-content">
+    <div class="page-header">
+      <div class="page-kicker">Admin Portal</div>
+      <h1 class="page-title">Audit Records</h1>
+      <p class="page-subtitle">Chronological log of administrative actions recorded in Audit_Records.</p>
+    </div>
+
+    {% if logs %}
+      <div class="table-wrap">
+        <table class="rs-table">
+          <thead>
+            <tr>
+              <th>Audit ID</th>
+              <th>Action</th>
+              <th>Details</th>
+              <th>Timestamp</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for log in logs %}
+              <tr>
+                <td>#{{ log.audit_id }}</td>
+                <td><span class="badge badge-completed">{{ log.action }}</span></td>
+                <td>{{ log.details or '—' }}</td>
+                <td>{{ log.created_at }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <div class="empty-state">
+        <h3>No Audit Records Yet</h3>
+        <p>Administrative actions will appear here once recorded.</p>
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

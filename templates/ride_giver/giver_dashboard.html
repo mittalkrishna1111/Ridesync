@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% from 'components/sidebar.html' import user_sidebar %}
+{% from 'components/status_badge.html' import status_badge %}
+{% block title %}Ride Giver Dashboard | RideSync{% endblock %}
+
+{% block content %}
+<div class="portal-layout">
+  {{ user_sidebar('giver_dashboard') }}
+
+  <div class="portal-content">
+    <div class="page-header">
+      <div class="page-kicker">Ride Giver</div>
+      <h1 class="page-title">Ride Giver Overview</h1>
+      <p class="page-subtitle">Manage your vehicles, posted rides, and incoming passenger requests.</p>
+    </div>
+
+    <div class="grid-3 mb-3">
+      <div class="stat-card">
+        <div class="stat-label">Active Vehicles</div>
+        <div class="stat-value">{{ stats.active_vehicles }}</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Active / Full Rides</div>
+        <div class="stat-value">{{ stats.active_posted_rides }}</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Pending Requests</div>
+        <div class="stat-value">{{ stats.incoming_requests }}</div>
+      </div>
+    </div>
+
+    <div class="form-actions mb-3" style="margin-top:0;">
+      <a href="{{ url_for('giver_offer_ride') }}" class="btn primary btn-sm">Offer a New Ride</a>
+      <a href="{{ url_for('giver_register_vehicle') }}" class="btn outline btn-sm">Register Vehicle</a>
+      <a href="{{ url_for('giver_requests') }}" class="btn outline btn-sm">Manage Requests</a>
+    </div>
+
+    <h2 class="mb-2">Recent Active Posted Rides</h2>
+    {% if posted_rides %}
+      <div class="grid-2 mb-3">
+        {% for ride in posted_rides[:4] %}
+          <div class="ride-card">
+            <div class="ride-card-header">
+              <div class="ride-route">Ride #{{ ride.ride_id }}: {{ ride.pickup_city }} &rarr; {{ ride.destination_city }}</div>
+              {{ status_badge(ride.ride_status) }}
+            </div>
+            <div class="ride-meta">
+              <span><strong>Date &amp; Time:</strong> {{ ride.ride_date }} at {{ ride.ride_time_fmt }}</span>
+              <span><strong>Seats:</strong> {{ ride.available_seats }} / {{ ride.total_seats }}</span>
+              <span><strong>Price:</strong> Rs. {{ ride.price_per_seat }}</span>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="empty-state mb-3">
+        <h3>No Active Rides Posted</h3>
+        <p>Offer a ride to share empty seats on your next campus trip.</p>
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

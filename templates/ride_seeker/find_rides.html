@@ -1,0 +1,156 @@
+{% extends 'base.html' %}
+{% from 'components/sidebar.html' import user_sidebar %}
+{% from 'components/status_badge.html' import status_badge %}
+{% block title %}Find Rides | RideSync{% endblock %}
+
+{% block content %}
+<div class="portal-layout">
+  {{ user_sidebar('find_rides') }}
+
+  <div class="portal-content">
+    <div class="page-header">
+      <div class="page-kicker">Ride Seeker</div>
+      <h1 class="page-title">Find Available Rides</h1>
+      <p class="page-subtitle">Search by pickup, destination, date, and preferred time (±30 min window), or browse all upcoming rides below.</p>
+    </div>
+
+    <form method="POST" action="{{ url_for('seeker_find_rides') }}" class="form-card mb-3">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label" for="pickup_location_id">Pickup Location</label>
+          <select class="form-select" id="pickup_location_id" name="pickup_location_id" required>
+            <option value="">Select pickup point</option>
+            {% for loc in locations %}
+              <option value="{{ loc.location_id }}" {% if search_params.get('pickup_location_id') == loc.location_id|string %}selected{% endif %}>
+                {{ loc.city }} — {{ loc.area }}, {{ loc.point_name }}
+              </option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="destination_location_id">Destination Location</label>
+          <select class="form-select" id="destination_location_id" name="destination_location_id" required>
+            <option value="">Select destination point</option>
+            {% for loc in locations %}
+              <option value="{{ loc.location_id }}" {% if search_params.get('destination_location_id') == loc.location_id|string %}selected{% endif %}>
+                {{ loc.city }} — {{ loc.area }}, {{ loc.point_name }}
+              </option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="ride_date">Ride Date</label>
+          <input class="form-control" type="date" id="ride_date" name="ride_date" value="{{ search_params.get('ride_date', '') }}" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="ride_time">Preferred Time (24h)</label>
+          <div class="clock-input-wrap">
+            <input class="form-control clock-input" type="text" id="ride_time" name="ride_time" value="{{ search_params.get('ride_time', '') }}" placeholder="HH:MM" pattern="^([01]\d|2[0-3]):[0-5]\d$" data-clock-picker readonly required>
+            <button type="button" class="clock-trigger-btn" aria-label="Open clock picker" data-clock-for="ride_time">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="seats_required">Seats Required</label>
+          <input class="form-control" type="number" id="seats_required" name="seats_required" min="1" max="255" value="{{ search_params.get('seats_required', '1') }}" required>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn primary">Search Matching Rides</button>
+        {% if matching_rides is not none %}
+          <a href="{{ url_for('seeker_find_rides') }}" class="btn outline">Clear Search</a>
+        {% endif %}
+      </div>
+    </form>
+
+    {% if matching_rides is not none %}
+      <h2 class="mb-2">Matching Rides ({{ matching_rides|length }})</h2>
+      {% if matching_rides %}
+        <div class="grid-2 mb-3">
+          {% for ride in matching_rides %}
+            <div class="ride-card">
+              <div class="ride-card-header">
+                <div>
+                  <div class="ride-route">{{ ride.pickup_city }} ({{ ride.pickup_point }}) &rarr; {{ ride.destination_city }} ({{ ride.destination_point }})</div>
+                  <div class="card-muted">Ride #{{ ride.ride_id }} &bull; Match Score: {{ ride.final_score }} / 100 (&Delta; {{ ride.time_difference_min }} min)</div>
+                </div>
+                {{ status_badge(ride.ride_status) }}
+              </div>
+              <div class="ride-meta">
+                <span><strong>Driver:</strong> {{ ride.driver_name }}</span>
+                <span><strong>Vehicle:</strong> {{ ride.vehicle_name }} ({{ ride.registration_number }})</span>
+                <span><strong>Date &amp; Time:</strong> {{ ride.ride_date }} at {{ ride.ride_time_fmt }}</span>
+                <span><strong>Seats Left:</strong> {{ ride.available_seats }}</span>
+                <span><strong>Price/Seat:</strong> Rs. {{ ride.price_per_seat }}</span>
+                <span><strong>Est. Total:</strong> Rs. {{ ride.estimated_total_fare }}</span>
+                <span class="rating-stars">
+                  {% if ride.total_ratings > 0 %}
+                    &#9733; {{ "%.2f"|format(ride.average_rating) }} / 5 ({{ ride.total_ratings }})
+                  {% else %}
+                    No ratings yet
+                  {% endif %}
+                </span>
+              </div>
+              <div class="ride-actions">
+                <a href="{{ url_for('seeker_ride_details', ride_id=ride.ride_id) }}" class="btn primary btn-sm">View &amp; Request</a>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="empty-state mb-3">
+          <h3>No Matching Rides Found</h3>
+          <p>No active rides matched your exact route within 30 minutes of your preferred time.</p>
+        </div>
+      {% endif %}
+    {% endif %}
+
+    <h2 class="mb-2">All Upcoming Available Rides ({{ available_rides|length }})</h2>
+    {% if available_rides %}
+      <div class="grid-2">
+        {% for ride in available_rides %}
+          <div class="ride-card">
+            <div class="ride-card-header">
+              <div>
+                <div class="ride-route">{{ ride.pickup_city }}, {{ ride.pickup_area }} &rarr; {{ ride.destination_city }}, {{ ride.destination_area }}</div>
+                <div class="card-muted">{{ ride.pickup_point }} &rarr; {{ ride.destination_point }}</div>
+              </div>
+              {{ status_badge(ride.ride_status) }}
+            </div>
+            <div class="ride-meta">
+              <span><strong>Ride ID:</strong> #{{ ride.ride_id }}</span>
+              <span><strong>Driver:</strong> {{ ride.driver_name }}</span>
+              <span><strong>Vehicle:</strong> {{ ride.vehicle_name }} ({{ ride.registration_number }})</span>
+              <span><strong>Date &amp; Time:</strong> {{ ride.ride_date }} at {{ ride.ride_time_fmt }}</span>
+              <span><strong>Available Seats:</strong> {{ ride.available_seats }} / {{ ride.total_seats }}</span>
+              <span><strong>Price/Seat:</strong> Rs. {{ ride.price_per_seat }}</span>
+              <span class="rating-stars">
+                {% if ride.total_ratings > 0 %}
+                  &#9733; {{ "%.2f"|format(ride.average_rating) }} / 5
+                {% else %}
+                  No ratings yet
+                {% endif %}
+              </span>
+            </div>
+            <div class="ride-actions">
+              <a href="{{ url_for('seeker_ride_details', ride_id=ride.ride_id) }}" class="btn primary btn-sm">View Ride Details</a>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="empty-state">
+        <h3>No Upcoming Rides Available</h3>
+        <p>There are currently no upcoming active rides posted by other drivers.</p>
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

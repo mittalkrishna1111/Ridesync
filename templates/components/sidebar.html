@@ -1,0 +1,45 @@
+{% macro user_sidebar(active_page='') %}
+<aside class="sidebar" aria-label="User Navigation">
+  <div class="sidebar-section">Overview</div>
+  <nav class="sidebar-nav">
+    <a href="{{ url_for('dashboard') }}" class="sidebar-link {% if active_page == 'dashboard' %}active{% endif %}">Dashboard</a>
+    <a href="{{ url_for('profile') }}" class="sidebar-link {% if active_page == 'profile' %}active{% endif %}">My Profile</a>
+  </nav>
+
+  <div class="sidebar-section">Ride Seeker</div>
+  <nav class="sidebar-nav">
+    <a href="{{ url_for('seeker_find_rides') }}" class="sidebar-link {% if active_page == 'find_rides' %}active{% endif %}">Find Rides</a>
+    <a href="{{ url_for('seeker_requests') }}" class="sidebar-link {% if active_page == 'seeker_requests' %}active{% endif %}">My Ride Requests</a>
+    <a href="{{ url_for('seeker_bookings') }}" class="sidebar-link {% if active_page == 'seeker_bookings' %}active{% endif %}">My Bookings</a>
+    <a href="{{ url_for('seeker_history') }}" class="sidebar-link {% if active_page == 'seeker_history' %}active{% endif %}">Ride History</a>
+    <a href="{{ url_for('seeker_feedback') }}" class="sidebar-link {% if active_page == 'seeker_feedback' %}active{% endif %}">Give Feedback</a>
+  </nav>
+
+  <div class="sidebar-section">Ride Giver</div>
+  <nav class="sidebar-nav">
+    <a href="{{ url_for('giver_dashboard') }}" class="sidebar-link {% if active_page == 'giver_dashboard' %}active{% endif %}">Giver Overview</a>
+    <a href="{{ url_for('giver_vehicles') }}" class="sidebar-link {% if active_page == 'my_vehicles' %}active{% endif %}">My Vehicles</a>
+    <a href="{{ url_for('giver_register_vehicle') }}" class="sidebar-link {% if active_page == 'register_vehicle' %}active{% endif %}">Register Vehicle</a>
+    <a href="{{ url_for('giver_offer_ride') }}" class="sidebar-link {% if active_page == 'offer_ride' %}active{% endif %}">Offer a Ride</a>
+    <a href="{{ url_for('giver_rides') }}" class="sidebar-link {% if active_page == 'my_rides' %}active{% endif %}">My Posted Rides</a>
+    <a href="{{ url_for('giver_requests') }}" class="sidebar-link {% if active_page == 'manage_requests' %}active{% endif %}">Manage Requests</a>
+    <a href="{{ url_for('giver_history') }}" class="sidebar-link {% if active_page == 'giver_history' %}active{% endif %}">Posted Ride History</a>
+    <a href="{{ url_for('giver_feedback') }}" class="sidebar-link {% if active_page == 'received_feedback' %}active{% endif %}">Received Feedback</a>
+  </nav>
+</aside>
+{% endmacro %}
+
+{% macro admin_sidebar(active_page='') %}
+<aside class="sidebar" aria-label="Admin Navigation">
+  <div class="sidebar-section">Admin Portal</div>
+  <nav class="sidebar-nav">
+    <a href="{{ url_for('admin_dashboard') }}" class="sidebar-link {% if active_page == 'admin_dashboard' %}active{% endif %}">Dashboard</a>
+    <a href="{{ url_for('admin_users') }}" class="sidebar-link {% if active_page == 'admin_users' %}active{% endif %}">Manage Users</a>
+    <a href="{{ url_for('admin_vehicles') }}" class="sidebar-link {% if active_page == 'admin_vehicles' %}active{% endif %}">Manage Vehicles</a>
+    <a href="{{ url_for('admin_reports') }}" class="sidebar-link {% if active_page == 'admin_reports' %}active{% endif %}">Manage Reports</a>
+    <a href="{{ url_for('admin_feedback') }}" class="sidebar-link {% if active_page == 'admin_feedback' %}active{% endif %}">Driver Feedback</a>
+    <a href="{{ url_for('admin_ongoing_rides') }}" class="sidebar-link {% if active_page == 'admin_ongoing_rides' %}active{% endif %}">Ongoing Rides</a>
+    <a href="{{ url_for('admin_audit_logs') }}" class="sidebar-link {% if active_page == 'admin_audit_logs' %}active{% endif %}">Audit Records</a>
+  </nav>
+</aside>
+{% endmacro %}

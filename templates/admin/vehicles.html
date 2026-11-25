@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% from 'components/sidebar.html' import admin_sidebar %}
+{% from 'components/status_badge.html' import status_badge %}
+{% block title %}Manage Vehicles | RideSync Admin{% endblock %}
+
+{% block content %}
+<div class="portal-layout">
+  {{ admin_sidebar('admin_vehicles') }}
+
+  <div class="portal-content">
+    <div class="page-header">
+      <div class="page-kicker">Admin Portal</div>
+      <h1 class="page-title">Manage Vehicles</h1>
+      <p class="page-subtitle">Inspect registered vehicles and update vehicle statuses (ACTIVE, INACTIVE).</p>
+    </div>
+
+    {% if vehicles %}
+      <div class="table-wrap">
+        <table class="rs-table">
+          <thead>
+            <tr>
+              <th>Vehicle ID</th>
+              <th>Owner</th>
+              <th>Vehicle Name</th>
+              <th>Registration</th>
+              <th>Capacity</th>
+              <th>Status</th>
+              <th>Update Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for v in vehicles %}
+              <tr>
+                <td>#{{ v.vehicle_id }}</td>
+                <td>{{ v.owner_name }} (#{{ v.owner_id }})</td>
+                <td>{{ v.vehicle_name }}</td>
+                <td>{{ v.registration_number }}</td>
+                <td>{{ v.seating_capacity }}</td>
+                <td>{{ status_badge(v.vehicle_status) }}</td>
+                <td>
+                  <form method="POST" action="{{ url_for('admin_vehicle_status', vehicle_id=v.vehicle_id) }}" class="inline-form">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <select class="form-select" name="vehicle_status" style="padding:7px 10px; font-size:12.5px; width:auto;">
+                      <option value="ACTIVE" {% if v.vehicle_status == 'ACTIVE' %}selected{% endif %}>ACTIVE</option>
+                      <option value="INACTIVE" {% if v.vehicle_status == 'INACTIVE' %}selected{% endif %}>INACTIVE</option>
+                    </select>
+                    <button type="submit" class="btn primary btn-sm">Update</button>
+                  </form>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <div class="empty-state">
+        <h3>No Vehicles Found</h3>
+        <p>No vehicles have been registered yet.</p>
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

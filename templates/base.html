@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}RideSync – Share Seats, Share Safety{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css', v='20261125') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/forms.css', v='20261125') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css', v='20261125') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/responsive.css', v='20261125') }}">
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+  <div class="bg" aria-hidden="true">
+    <div class="glow g1"></div>
+    <div class="glow g2"></div>
+  </div>
+
+  {% include 'components/navbar.html' %}
+
+  <main class="{% block main_class %}page-main{% endblock %}">
+    {% include 'components/alerts.html' %}
+    {% block content %}{% endblock %}
+  </main>
+
+  {% include 'components/footer.html' %}
+
+  <script src="{{ url_for('static', filename='js/main.js', v='20261125') }}"></script>
+  {% block extra_scripts %}{% endblock %}
+</body>
+</html>
