@@ -1,0 +1,109 @@
+/* RideSync Responsive Breakpoints */
+
+@media (max-width: 980px) {
+  .portal-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    position: static;
+  }
+
+  .grid-4 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .grid-3 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 860px) {
+  .site-nav {
+    padding: 20px 20px;
+    flex-wrap: wrap;
+  }
+
+  .nav-toggle {
+    display: inline-flex;
+  }
+
+  .links {
+    display: none;
+    width: 100%;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 16px 18px;
+    margin-top: 8px;
+    border-radius: var(--radius-md);
+    background: var(--surface-strong);
+    border: 1px solid var(--border);
+  }
+
+  .links.open {
+    display: flex;
+  }
+
+  .kicker {
+    letter-spacing: 0.3em;
+    font-size: 10px;
+  }
+
+  .btn.hero-btn {
+    min-width: 100%;
+  }
+
+  .login {
+    width: 100%;
+    max-width: 400px;
+  }
+
+  .sticker {
+    font-size: 10.5px;
+    padding: 6px 10px;
+  }
+
+  .grid-2,
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 560px) {
+  main.page-main,
+  main.hero-main {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .form-card,
+  .glass-card {
+    padding: 18px;
+  }
+
+  .grid-3,
+  .grid-4 {
+    grid-template-columns: 1fr;
+  }
+
+  .scene {
+    margin-top: 70px;
+    overflow: visible;
+  }
+
+  .scene svg {
+    width: 118%;
+    margin-left: -9%;
+  }
+
+  .s1,
+  .s3 {
+    display: none;
+  }
+
+  .s2 {
+    left: 30%;
+    top: -34px;
+  }
+}

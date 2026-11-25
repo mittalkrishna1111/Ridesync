@@ -1,0 +1,170 @@
+/* RideSync Dashboard, Sidebar & Ride Card Layouts */
+
+.portal-layout {
+  display: grid;
+  grid-template-columns: 250px minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
+}
+
+.sidebar {
+  background: rgba(7, 21, 38, 0.86);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 18px;
+  box-shadow: var(--shadow-card);
+  position: sticky;
+  top: 20px;
+}
+
+.sidebar-section {
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #67d5ff;
+  margin: 14px 0 8px 10px;
+}
+
+.sidebar-section:first-child {
+  margin-top: 4px;
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 13.5px;
+  font-weight: 500;
+  transition: 0.2s ease;
+}
+
+.sidebar-link:hover {
+  color: var(--white);
+  background: rgba(47, 111, 224, 0.14);
+}
+
+.sidebar-link.active {
+  color: var(--white);
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.35), rgba(20, 184, 166, 0.25));
+  border: 1px solid rgba(77, 163, 255, 0.35);
+}
+
+.portal-content {
+  min-width: 0;
+}
+
+.stat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 18px 20px;
+  box-shadow: var(--shadow-card);
+}
+
+.stat-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-label);
+}
+
+.stat-value {
+  margin-top: 6px;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--white);
+  text-shadow: 0 0 18px rgba(120, 190, 255, 0.22);
+}
+
+.action-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  box-shadow: var(--shadow-card);
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.action-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--border-bright);
+}
+
+.ride-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px 22px;
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.ride-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.ride-route {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--white);
+}
+
+.ride-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px 24px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.ride-meta strong {
+  color: var(--text-label);
+  font-weight: 600;
+}
+
+.ride-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.fare-summary {
+  padding: 14px 16px;
+  border-radius: var(--radius-md);
+  background: rgba(20, 184, 166, 0.12);
+  border: 1px solid rgba(20, 184, 166, 0.4);
+  font-size: 13.5px;
+  color: var(--text-label);
+}
+
+.fare-summary strong {
+  color: var(--white);
+}
+
+.rating-stars {
+  color: #fde68a;
+  font-weight: 600;
+}
