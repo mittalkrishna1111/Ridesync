@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RideSync – Share Seats, Share Safety</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#06204f;
+    --blue:#2f6fe0;
+    --sky:#4da3ff;
+    --ice:#bfe0ff;
+    --cyan:#38bdf8;
+    --white:#fff;
+    --muted:#9fb8d6;
+    --tech:'Poppins',system-ui,sans-serif;
+    --body:'Poppins',system-ui,sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{min-height:100%} html{overflow-x:hidden}
+  body{
+    font-family:var(--body); color:var(--white); position:relative; overflow-x:hidden;
+    background:#030b12;
+    display:flex; flex-direction:column; min-height:100vh;
+  }
+
+  /* soft blue corner gradients */
+  .bg{position:absolute; inset:0; overflow:hidden; z-index:0; pointer-events:none}
+  .glow{position:absolute; z-index:0; pointer-events:none; border-radius:50%; filter:blur(34px)}
+  .g1{left:-22vw; bottom:-26vw; width:62vw; height:62vw;
+      background:radial-gradient(circle, rgba(66,140,200,.55) 0%, rgba(38,105,175,.46) 26%, rgba(22,70,140,.34) 50%, rgba(15,50,110,.10) 66%, transparent 74%)}
+  .g2{right:-22vw; top:-30vw; width:62vw; height:62vw;
+      background:radial-gradient(circle, rgba(66,140,200,.50) 0%, rgba(38,105,175,.42) 26%, rgba(22,70,140,.32) 50%, rgba(15,50,110,.10) 66%, transparent 74%)}
+
+  /* ---------- nav ---------- */
+  nav{
+    position:relative; z-index:3; width:100%; max-width:1240px; margin:0 auto;
+    padding:26px 28px; display:flex; align-items:center; justify-content:space-between; gap:20px;
+  }
+  .logo{display:flex; align-items:center; gap:11px; color:#fff; text-decoration:none; font-family:var(--tech); font-weight:700; font-size:16px; letter-spacing:.02em}
+  .logo i{
+    font-style:normal; width:34px; height:34px; display:grid; place-items:center; border-radius:10px;
+    font-size:11px; color:#fff; background:linear-gradient(135deg,#14b8a6,#2563eb);
+    box-shadow:0 0 18px rgba(20,184,166,.5);
+  }
+  .links{display:flex; gap:38px; align-items:center}
+  .links a{
+    font-family:var(--body); font-size:11.5px; letter-spacing:.12em; text-transform:uppercase;
+    color:#fff; text-decoration:none; opacity:.85; transition:.2s;
+  }
+  .links a:hover{opacity:1; text-shadow:0 0 12px rgba(160,210,255,.9)}
+
+  /* ---------- hero ---------- */
+  main{
+    position:relative; z-index:2; flex:1; width:100%; max-width:1240px; margin:0 auto;
+    padding:10px 28px 10px; display:flex; flex-direction:column; align-items:center; text-align:center;
+  }
+  .kicker{
+    margin-top:18px; font-size:11px; font-weight:500; letter-spacing:.55em; text-transform:uppercase;
+    color:#cfe3ff; padding-left:.55em;
+  }
+  .title{
+    margin-top:18px; font-family:var(--tech); font-weight:800; color:#fff;
+    font-size:clamp(40px,9.5vw,120px); line-height:1.05; letter-spacing:.02em;
+    text-shadow:
+      0 0 5px rgba(255,255,255,.95),
+      0 0 18px rgba(255,255,255,.75),
+      0 0 42px rgba(150,205,255,.6),
+      0 0 80px rgba(80,160,255,.4);
+  }
+  .tag{
+    margin-top:22px; font-size:clamp(14px,1.7vw,19px); font-weight:500; letter-spacing:.04em; color:#fff;
+  }
+  .lead{
+    margin-top:12px; max-width:560px; font-size:13.5px; font-weight:300; line-height:1.75; color:var(--muted);
+  }
+  .lead b{color:inherit; font-weight:inherit}
+
+  .login{margin-top:28px; display:flex; gap:14px; justify-content:center; flex-wrap:wrap}
+  .btn{
+    display:flex; align-items:center; justify-content:center; gap:10px; min-width:300px;
+    padding:15px 26px; border-radius:999px; font-weight:600; font-size:14px; text-decoration:none; transition:.25s;
+  }
+  .btn.primary{
+    color:#fff; background:linear-gradient(135deg,#2563eb,#14b8a6);
+    box-shadow:0 0 0 1px rgba(255,255,255,.25) inset, 0 10px 34px rgba(20,140,200,.5);
+  }
+  .btn.primary:hover{transform:translateY(-2px); box-shadow:0 0 0 1px rgba(255,255,255,.4) inset, 0 14px 42px rgba(20,170,200,.75)}
+  .btn.outline{
+    color:#fff; background:rgba(4,15,27,.8); border:1.5px solid rgba(150,200,255,.4);
+  }
+  .btn.outline:hover{background:rgba(10,28,48,.95); transform:translateY(-2px); border-color:#bfe0ff}
+  .ms{display:grid; grid-template-columns:repeat(2,8px); gap:2px}
+  .ms span{width:8px; height:8px; display:block}
+  .ms span:nth-child(1){background:#f25022}
+  .ms span:nth-child(2){background:#7fba00}
+  .ms span:nth-child(3){background:#00a4ef}
+  .ms span:nth-child(4){background:#ffb900}
+  .have{margin-top:16px; font-size:13px; color:var(--muted)}
+  .have a{color:#fff; font-weight:600; text-decoration:none; border-bottom:1px solid rgba(255,255,255,.5)}
+  .have a:hover{border-color:#fff}
+
+  /* ---------- cute carpool scene ---------- */
+  .scene{position:relative; width:100%; max-width:1100px; margin-top:62px}
+  .scene svg{width:100%; height:auto; display:block; overflow:visible}
+  .route{animation:flow 1.6s linear infinite; filter:drop-shadow(0 0 6px rgba(45,212,191,.8))}
+  @keyframes flow{to{stroke-dashoffset:-32}}
+  
+  .twinkle{animation:tw 2.4s ease-in-out infinite}
+  @keyframes tw{50%{opacity:.2}}
+  .cloud{animation:drift 14s ease-in-out infinite alternate}
+  @keyframes drift{to{transform:translateX(30px)}}
+  .wheel{transform-box:fill-box; transform-origin:center; animation:spin 1s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  .sticker{
+    position:absolute; background:#fff; color:#06204f; font-weight:700; font-size:12.5px;
+    padding:8px 14px; border-radius:15px; border:2px solid #06204f; white-space:nowrap;
+    box-shadow:0 5px 0 rgba(0,0,0,.6), 0 0 22px rgba(60,180,200,.35);
+    animation:sbob 4s ease-in-out infinite;
+  }
+  .s1{left:19%; top:6%; transform:rotate(-5deg)}
+  .s2{left:55%; top:-2%; transform:rotate(4deg); animation-delay:-1.3s}
+  .s3{right:4%; top:34%; transform:rotate(-3deg); animation-delay:-2.6s}
+  @keyframes sbob{50%{margin-top:-8px}}
+
+  footer{
+    position:relative; z-index:2; text-align:center; padding:12px 24px 24px;
+    font-size:11px; letter-spacing:.22em; text-transform:uppercase; color:var(--muted);
+  }
+
+  @media(max-width:860px){
+    .links a:not(.keep){display:none}
+    .links{gap:0}
+    .kicker{letter-spacing:.3em; font-size:10px}
+    .btn{min-width:100%}
+    .login{width:100%; max-width:400px}
+    .sticker{font-size:10.5px; padding:6px 10px}
+  }
+  @media(max-width:520px){
+    .scene{margin-top:70px; overflow:visible}
+    .scene svg{width:118%; margin-left:-9%}
+    .s1,.s3{display:none}
+    .s2{left:30%; top:-34px}
+  }
+</style>
+</head>
+<body>
+
+<!-- soft blue corner glows -->
+<div class="bg"><div class="glow g1"></div><div class="glow g2"></div></div>
+
+<nav>
+  <a class="logo" href="/"><i>RS</i> RIDESYNC</a>
+  <div class="links">
+    <a href="/">Home</a>
+    <a href="/about">About</a>
+    <a href="/safety">Safety</a>
+    <a class="keep" href="/login">Log in</a>
+  </div>
+</nav>
+
+<main>
+  <p class="kicker">College Ride Sharing Platform</p>
+  <h1 class="title">RIDESYNC</h1>
+  <p class="tag">Share Seats, Share Safety. Ride Together, Reach Together.</p>
+  <p class="lead"><b>RideSync</b> connects verified college students to offer and book campus commutes safely, split travel costs fairly, and manage rides with transparent ratings.</p>
+
+  <div class="login">
+    <a class="btn primary" href="/register">Create an account</a>
+  </div>
+  <p class="have">Already have an account? <a href="/login">Log in</a></p>
+
+  <!-- cute route: Home -> Campus -->
+  <div class="scene" aria-hidden="true">
+    <svg viewBox="0 0 1200 250" xmlns="http://www.w3.org/2000/svg">
+
+      <!-- dotted route -->
+      <path class="route" d="M120 220 C 300 90, 470 250, 640 175 S 960 70, 1080 185"
+            fill="none" stroke="#5eead4" stroke-width="5" stroke-linecap="round" stroke-dasharray="2 14"/>
+
+      <!-- Home pin -->
+      <g transform="translate(120 222)">
+        <ellipse cx="0" cy="2" rx="14" ry="4" fill="#031030" opacity=".4"/>
+        <path d="M0 0 C-14 -16 -22 -28 -22 -38 a22 22 0 1 1 44 0 C22 -28 14 -16 0 0Z" fill="#fde68a"/>
+        <circle cx="0" cy="-38" r="14" fill="#fffbeb"/>
+        <text x="0" y="-32" font-size="17" text-anchor="middle">🏠</text>
+      </g>
+      <text x="120" y="244" font-size="11" font-weight="700" fill="#9fb8d6" text-anchor="middle" letter-spacing="1.5" font-family="Poppins,sans-serif">HOME</text>
+
+      <!-- Campus pin -->
+      <g transform="translate(1080 187)">
+        <ellipse cx="0" cy="2" rx="14" ry="4" fill="#031030" opacity=".4"/>
+        <path d="M0 0 C-14 -16 -22 -28 -22 -38 a22 22 0 1 1 44 0 C22 -28 14 -16 0 0Z" fill="#14b8a6"/>
+        <circle cx="0" cy="-38" r="14" fill="#fff"/>
+        <text x="0" y="-32" font-size="17" text-anchor="middle">🎓</text>
+      </g>
+      <text x="1080" y="209" font-size="11" font-weight="700" fill="#9fb8d6" text-anchor="middle" letter-spacing="1.5" font-family="Poppins,sans-serif">CAMPUS</text>
+
+      <!-- cute carpool car -->
+      <g transform="translate(531.8 193.9) rotate(-0.0) translate(-81 -86)">
+        <ellipse cx="81" cy="90" rx="56" ry="5" fill="#000" opacity=".35"/>
+        <g class="car-bob">
+          <path d="M36 32 Q46 4 80 4 H104 Q128 4 136 32Z" fill="#3b82f6"/>
+          <path d="M48 30 Q54 13 76 13 H84 V30Z" fill="#e0f2fe"/>
+          <path d="M92 13 H102 Q116 13 123 30 H92Z" fill="#e0f2fe"/>
+          <circle cx="68" cy="25" r="7" fill="#fde68a"/>
+          <circle cx="66" cy="24" r="1.2" fill="#06204f"/><circle cx="71" cy="24" r="1.2" fill="#06204f"/>
+          <circle cx="107" cy="25" r="7" fill="#fbcfe8"/>
+          <circle cx="105" cy="24" r="1.2" fill="#06204f"/><circle cx="110" cy="24" r="1.2" fill="#06204f"/>
+          <rect x="8" y="30" width="144" height="44" rx="18" fill="#1d4ed8"/>
+          <path d="M20 40 H140" stroke="#2dd4bf" stroke-width="4" stroke-linecap="round" opacity=".8"/>
+          <circle cx="146" cy="52" r="5" fill="#fde68a"/>
+          <rect x="8" y="46" width="6" height="10" rx="3" fill="#fda4af"/>
+          <circle cx="42" cy="74" r="14" fill="#030b14" stroke="#cfe8ff" stroke-width="3"/>
+          <g class="wheel"><circle cx="42" cy="74" r="4" fill="#cfe8ff"/><rect x="41" y="62" width="2" height="24" fill="#cfe8ff" opacity=".5"/></g>
+          <circle cx="120" cy="74" r="14" fill="#030b14" stroke="#cfe8ff" stroke-width="3"/>
+          <g class="wheel"><circle cx="120" cy="74" r="4" fill="#cfe8ff"/><rect x="119" y="62" width="2" height="24" fill="#cfe8ff" opacity=".5"/></g>
+        </g>
+      </g>
+    </svg>
+
+    <div class="sticker s1">🚗 2 seats left</div>
+    <div class="sticker s2">✅ Ride matched!</div>
+    <div class="sticker s3">💸 Fair cost split</div>
+  </div>
+</main>
+
+<footer>RideSync — Share Seats, Share Safety</footer>
+
+</body>
+</html>
